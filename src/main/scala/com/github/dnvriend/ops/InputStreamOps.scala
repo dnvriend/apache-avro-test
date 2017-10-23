@@ -14,4 +14,14 @@
 
 package com.github.dnvriend.ops
 
-object All extends AvroOps with ByteArrayOps with ByteBufferOps with StringOps
+import java.io.InputStream
+
+trait InputStreamOps {
+  implicit def toInputStreamOpsImpl(that: InputStream) = new InputStreamOpsImpl(that)
+}
+
+class InputStreamOpsImpl(that: InputStream) {
+  def toByteArray: Array[Byte] = {
+    Stream.continually(that.read()).takeWhile(_ != -1).map(_.toByte).toArray
+  }
+}

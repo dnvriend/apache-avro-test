@@ -15,7 +15,6 @@
 package com.github.dnvriend.evolution
 
 import com.github.dnvriend.TestSpec
-import com.github.dnvriend.ops.All._
 import com.github.dnvriend.ops.AvroOps
 import com.sksamuel.avro4s.{ AvroNamespace, SchemaFor }
 import org.apache.avro.Schema
@@ -135,7 +134,7 @@ object v4 {
     """.stripMargin
 
   // create a schema with Avro4s
-  val schema: Schema = schemaFor[Person]
+  val schema: Schema = SchemaFor[Person]()
 }
 
 object v5 {
@@ -143,7 +142,7 @@ object v5 {
   case class DeliveryAddress(city: Option[String] = None, zipcode: Option[String] = None, houseNumber: Option[Int] = None)
   @AvroNamespace("com.github.dnvriend")
   case class Person(name: String = "", age: Int = 0, deliveryAddress: Option[DeliveryAddress] = None)
-  val schema: Schema = schemaFor[Person]
+  val schema: Schema = SchemaFor[Person]()
 }
 
 object v6 {
@@ -175,7 +174,7 @@ object v6 {
       |  } ]
       |}
     """.stripMargin
-  val schema: Schema = schemaFor[Person]
+  val schema: Schema = SchemaFor[Person]()
 }
 
 object v7 {
@@ -210,7 +209,7 @@ object v7 {
       |  } ]
       |}
     """.stripMargin
-  val schema: Schema = schemaFor[Person]
+  val schema: Schema = SchemaFor[Person]()
 }
 
 object v8 {
@@ -248,7 +247,7 @@ object v8 {
       |  } ]
       |}
     """.stripMargin
-  val schema: Schema = schemaFor[Person]
+  val schema: Schema = SchemaFor[Person]()
 }
 
 object v9 {
@@ -278,18 +277,18 @@ object v10 {
   // not compatible
   @AvroNamespace("com.github.dnvriend")
   case class Person(name: String, age: Int)
-  val schema = schemaFor[Person]
+  val schema: Schema = SchemaFor[Person]()
 }
 
 class SchemaEvolutionTest extends TestSpec {
   val v1Person = v1.Person("Dennis")
-  val v1Hex: String = v1Person.toAvroBinary.toHex
+  val v1Hex: String = v1Person.toAvroBinary.hex
 
   val v2Person = v2.Person("Dennis", 42)
-  val v2Hex: String = v2Person.toAvroBinary.toHex
+  val v2Hex: String = v2Person.toAvroBinary.hex
 
   val v3Person = v3.Person(42, "Dennis")
-  val v3Hex: String = v3Person.toAvroBinary.toHex
+  val v3Hex: String = v3Person.toAvroBinary.hex
 
   it should "handle reordering of fields" in {
     v1Hex shouldBe "0C44656E6E6973"

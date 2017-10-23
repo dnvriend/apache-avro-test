@@ -26,7 +26,7 @@ trait ByteArrayOps {
 }
 
 class ByteArrayOpsImpl(that: Array[Byte]) {
-  def toHex: String = {
+  def hex: String = {
     javax.xml.bind.DatatypeConverter.printHexBinary(that)
   }
   def compress: Array[Byte] = {
@@ -38,7 +38,7 @@ class ByteArrayOpsImpl(that: Array[Byte]) {
     bos.toByteArray
   }
 
-  def decompress: Try[Array[Byte]] = Try {
+  def decompress: Array[Byte] = {
     val bis = new ByteArrayInputStream(that)
     val gzip = new java.util.zip.GZIPInputStream(bis, that.length)
     Stream.continually(gzip.read()).takeWhile(_ != -1).map(_.toByte).toArray
@@ -56,22 +56,22 @@ class ByteArrayOpsImpl(that: Array[Byte]) {
     new String(that, "UTF-8")
   }
 
-  def toBase64: String = {
+  def base64: String = {
     java.util.Base64.getEncoder.encodeToString(that)
   }
 
   def md5: String = {
     import ByteArrayOps._
-    java.security.MessageDigest.getInstance("MD5").digest(that).toHex
+    java.security.MessageDigest.getInstance("MD5").digest(that).hex
   }
 
   def sha1: String = {
     import ByteArrayOps._
-    java.security.MessageDigest.getInstance("SHA-1").digest(that).toHex
+    java.security.MessageDigest.getInstance("SHA-1").digest(that).hex
   }
 
   def sha256: String = {
     import ByteArrayOps._
-    java.security.MessageDigest.getInstance("SHA-256").digest(that).toHex
+    java.security.MessageDigest.getInstance("SHA-256").digest(that).hex
   }
 }
