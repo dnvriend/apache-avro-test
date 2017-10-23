@@ -18,6 +18,7 @@ import java.io.{ ByteArrayOutputStream, OutputStream }
 
 import com.sksamuel.avro4s._
 import org.apache.avro.SchemaCompatibility.SchemaCompatibilityType
+import org.apache.avro.file.SeekableByteArrayInput
 import org.apache.avro.{ Schema, SchemaCompatibility, SchemaValidatorBuilder }
 
 import scalaz._
@@ -30,7 +31,7 @@ trait AvroOps {
 
   def schemaFor[A <: Product](implicit schemaFor: SchemaFor[A]): Schema = schemaFor()
 
-  def canReadWith[R <: Product, W <: Product](implicit readerSchema: SchemaFor[R], writerSchema: SchemaFor[W]): Disjunction[Throwable, Schema] = {
+  def checkCanReadWith[R <: Product, W <: Product](implicit readerSchema: SchemaFor[R], writerSchema: SchemaFor[W]): Disjunction[Throwable, Schema] = {
     val result: SchemaCompatibility.SchemaPairCompatibility = SchemaCompatibility.checkReaderWriterCompatibility(readerSchema(), writerSchema())
     result.getType match {
       case SchemaCompatibilityType.COMPATIBLE   => DRight(readerSchema())
@@ -74,12 +75,16 @@ class AvroSerializeOpsImpl[A <: Product: SchemaFor: ToRecord](data: A) {
   }
 
   def to[B <: Product: SchemaFor: FromRecord]: Option[B] = {
-    new AvroDeSerializeOpsImpl(toAvroBinary).parseAvro[B, A]
+    new AvroDeSerializeOpsImpl(toAvroBinary).parseAvroBinary[B, A]
   }
 }
 
 class AvroDeSerializeOpsImpl(bytes: Array[Byte]) {
-  def parseAvro[R <: Product: SchemaFor: FromRecord, W <: Product](implicit writerSchemaFor: SchemaFor[W]): Option[R] = {
+  def parseAvroBinary[R <: Product: SchemaFor: FromRecord, W <: Product](implicit writerSchemaFor: SchemaFor[W]): Option[R] = {
     AvroInputStream.binary[R](bytes, writerSchemaFor()).iterator().toList.headOption
+  }
+
+  def parseAvroJson[R <: Product: FromRecord, W <: Product](implicit readerSchemaFor: SchemaFor[R], writerSchemaFor: SchemaFor[W]): Option[R] = {
+    AvroJsonInputStream[R](new SeekableByteArrayInput(bytes), Option(writerSchemaFor())).iterator().toList.headOption
   }
 }

@@ -292,16 +292,16 @@ class SchemaEvolutionTest extends TestSpec {
 
   it should "handle reordering of fields" in {
     v1Hex shouldBe "0C44656E6E6973"
-    v1Hex.fromHex.parseAvro[v1.Person, v1.Person].value shouldBe v1Person
+    v1Hex.fromHex.parseAvroBinary[v1.Person, v1.Person].value shouldBe v1Person
 
     v2Hex shouldBe "0C44656E6E697354"
-    v2Hex.fromHex.parseAvro[v2.Person, v2.Person].value shouldBe v2Person
+    v2Hex.fromHex.parseAvroBinary[v2.Person, v2.Person].value shouldBe v2Person
 
     v3Hex shouldBe "540C44656E6E6973"
-    v3Hex.fromHex.parseAvro[v3.Person, v3.Person].value shouldBe v3Person
+    v3Hex.fromHex.parseAvroBinary[v3.Person, v3.Person].value shouldBe v3Person
 
     // reordering: name and age switched
-    v2.Person("dennis", 42).toAvroBinary.parseAvro[v3.Person, v2.Person].value shouldBe v3.Person(42, "dennis")
+    v2.Person("dennis", 42).toAvroBinary.parseAvroBinary[v3.Person, v2.Person].value shouldBe v3.Person(42, "dennis")
 
     // or shorter
     v2.Person("dennis", 42).to[v3.Person].value shouldBe v3.Person(42, "dennis")
@@ -383,8 +383,8 @@ class SchemaEvolutionTest extends TestSpec {
   }
 
   it should "test compatibility" in {
-    AvroOps.canReadWith[v2.Person, v1.Person] shouldBe right[Schema]
-    AvroOps.canReadWith[v2.Person, v1.Car] shouldBe left[Throwable]
+    AvroOps.checkCanReadWith[v2.Person, v1.Person] shouldBe right[Schema]
+    AvroOps.checkCanReadWith[v2.Person, v1.Car] shouldBe left[Throwable]
 
     // check full compatibility
     AvroOps.checkFullCompatibility[v1.Person](
