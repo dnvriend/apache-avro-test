@@ -15,7 +15,6 @@
 package com.github.dnvriend.evolution
 
 import com.github.dnvriend.TestSpec
-import com.github.dnvriend.ops.AvroOps
 import com.sksamuel.avro4s.{ AvroNamespace, SchemaFor }
 import org.apache.avro.Schema
 
@@ -383,11 +382,11 @@ class SchemaEvolutionTest extends TestSpec {
   }
 
   it should "test compatibility" in {
-    AvroOps.checkCanReadWith[v2.Person, v1.Person] shouldBe right[Schema]
-    AvroOps.checkCanReadWith[v2.Person, v1.Car] shouldBe left[Throwable]
+    checkCanReadWith[v2.Person, v1.Person] shouldBe right[Schema]
+    checkCanReadWith[v2.Person, v1.Car] shouldBe left[Throwable]
 
     // check full compatibility
-    AvroOps.checkFullCompatibility[v1.Person](
+    checkFullCompatibility[v1.Person](
       schemaFor[v2.Person],
       schemaFor[v3.Person],
       schemaFor[v4.Person],
@@ -399,7 +398,7 @@ class SchemaEvolutionTest extends TestSpec {
     ) shouldBe right[Schema]
 
     // not compatible
-    AvroOps.checkFullCompatibility[v10.Person](
+    checkFullCompatibility[v10.Person](
       schemaFor[v2.Person],
       schemaFor[v3.Person],
       schemaFor[v4.Person],
