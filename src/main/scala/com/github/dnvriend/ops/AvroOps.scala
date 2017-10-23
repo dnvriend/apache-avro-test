@@ -56,7 +56,7 @@ class AvroCompatibilityOpsImpl[A <: Product, B <: Product](implicit schemaForA: 
 }
 
 class AvroSerializeOpsImpl[A <: Product: SchemaFor: ToRecord](data: A) {
-  private def withOutputStream[A](f: OutputStream => A): Array[Byte] = {
+  private def withOutputStream(f: OutputStream => Unit): Array[Byte] = {
     val baos = new ByteArrayOutputStream
     f(baos)
     baos.toByteArray
@@ -84,7 +84,15 @@ class AvroDeSerializeOpsImpl(bytes: Array[Byte]) {
     AvroInputStream.binary[R](bytes, writerSchemaFor()).iterator().toList.headOption
   }
 
+  def parseAvroBinary[R <: Product: FromRecord](writerSchema: Schema)(implicit readerSchema: SchemaFor[R]): Option[R] = {
+    new AvroBinaryInputStream[R](new SeekableByteArrayInput(bytes), Option(writerSchema), Option(readerSchema())).iterator().toList.headOption
+  }
+
   def parseAvroJson[R <: Product: FromRecord, W <: Product](implicit readerSchemaFor: SchemaFor[R], writerSchemaFor: SchemaFor[W]): Option[R] = {
     AvroJsonInputStream[R](new SeekableByteArrayInput(bytes), Option(writerSchemaFor())).iterator().toList.headOption
+  }
+
+  def parseAvroJson[R <: Product: FromRecord](writerSchema: Schema)(implicit readerSchema: SchemaFor[R]): Option[R] = {
+    AvroJsonInputStream[R](new SeekableByteArrayInput(bytes), Option(writerSchema), Option(readerSchema())).iterator().toList.headOption
   }
 }
