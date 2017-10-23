@@ -15,13 +15,14 @@
 package com.github.dnvriend.ops
 
 import com.github.dnvriend.TestSpec
-import com.sksamuel.avro4s.{ AvroAlias, AvroNamespace }
+import com.sksamuel.avro4s.{ AvroAlias, AvroNamespace, SchemaFor }
 import org.apache.avro.Schema
 
 object v1 {
   @AvroNamespace("nl.zorgdomein.test")
   case class Person(name: String = "", age: Int = 0)
   val zero = Person("John Doe", 42)
+  val schema: Schema = SchemaFor[Person]()
   val hex = "104A6F686E20446F6554"
   val jsonHex = "7B226E616D65223A224A6F686E20446F65222C22616765223A34327D"
 }
@@ -48,6 +49,11 @@ class AvroOpsTest extends TestSpec {
   it should "decode an avro binary" in {
     v1.hex.fromHex.parseAvroBinary[v1.Person, v1.Person].value shouldBe v1.zero
     v2.hex.fromHex.parseAvroBinary[v2.Person, v2.Person].value shouldBe v2.zero
+  }
+
+  it should "decode an avro binary when you only have the writer's schema" in {
+    v1.hex.fromHex.parseAvroBinary[v1.Person](v1.schema).value shouldBe v1.zero
+    v1.hex.fromHex.parseAvroBinary[v2.Person](v1.schema).value shouldBe v2.zero
   }
 
   it should "decode an avro json" in {
