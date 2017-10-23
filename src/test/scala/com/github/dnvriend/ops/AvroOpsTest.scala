@@ -25,6 +25,7 @@ object v1 {
   val schema: Schema = SchemaFor[Person]()
   val hex = "104A6F686E20446F6554"
   val jsonHex = "7B226E616D65223A224A6F686E20446F65222C22616765223A34327D"
+  val fingerprint = "13E476833FD0B8FFE0B92640251E634556DCF053D467ADBC3F317A5E5F7EC2B8"
 }
 
 object v2 {
@@ -33,6 +34,7 @@ object v2 {
   val zero = Person("John Doe", 42)
   val hex = "104A6F686E20446F6554"
   val jsonHex = "7B226E61616D223A224A6F686E20446F65222C226C65656674696A64223A34327D"
+  val fingerprint = "F9B340979572826225460C9E68BE170872D49168D78144AB68F100AD160EA8B5"
 }
 
 class AvroOpsTest extends TestSpec {
@@ -72,5 +74,10 @@ class AvroOpsTest extends TestSpec {
 
   it should "convert a v1.Person to a v2.Person" in {
     v1.zero.to[v2.Person].value shouldBe v2.zero
+  }
+
+  it should "calculate a fingerprint" in {
+    fingerPrintFor[v1.Person].hex shouldBe v1.fingerprint
+    fingerPrintFor[v2.Person].hex shouldBe v2.fingerprint
   }
 }
