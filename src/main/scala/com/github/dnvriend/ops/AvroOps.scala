@@ -22,6 +22,7 @@ import org.apache.avro.file.SeekableByteArrayInput
 import org.apache.avro.{ Schema, SchemaCompatibility, SchemaNormalization, SchemaValidatorBuilder }
 
 import scalaz._
+import scalaz.Scalaz._
 
 object AvroOps extends AvroOps
 
@@ -55,10 +56,6 @@ trait AvroOps {
   }
 }
 
-class AvroCompatibilityOpsImpl[A <: Product, B <: Product](implicit schemaForA: SchemaFor[A], schemaForB: SchemaFor[B]) {
-
-}
-
 class AvroSerializeOpsImpl[A <: Product: SchemaFor: ToRecord](data: A) {
   private def withOutputStream(f: OutputStream => Unit): Array[Byte] = {
     val baos = new ByteArrayOutputStream
@@ -78,25 +75,25 @@ class AvroSerializeOpsImpl[A <: Product: SchemaFor: ToRecord](data: A) {
     output.close()
   }
 
-  def to[B <: Product: SchemaFor: FromRecord]: Option[B] = {
+  def to[B <: Product: SchemaFor: FromRecord]: Disjunction[Throwable, B] = {
     new AvroDeSerializeOpsImpl(toAvroBinary).parseAvroBinary[B, A]
   }
 }
 
 class AvroDeSerializeOpsImpl(bytes: Array[Byte]) {
-  def parseAvroBinary[R <: Product: SchemaFor: FromRecord, W <: Product](implicit writerSchemaFor: SchemaFor[W]): Option[R] = {
-    AvroInputStream.binary[R](bytes, writerSchemaFor()).iterator().toList.headOption
+  def parseAvroBinary[R <: Product: SchemaFor: FromRecord, W <: Product](implicit writerSchemaFor: SchemaFor[W]): Disjunction[Throwable, R] = {
+    AvroInputStream.binary[R](bytes, writerSchemaFor()).tryIterator().next().toDisjunction
   }
 
-  def parseAvroBinary[R <: Product: FromRecord](writerSchema: Schema)(implicit readerSchema: SchemaFor[R]): Option[R] = {
-    new AvroBinaryInputStream[R](new SeekableByteArrayInput(bytes), Option(writerSchema), Option(readerSchema())).iterator().toList.headOption
+  def parseAvroBinary[R <: Product: FromRecord](writerSchema: Schema)(implicit readerSchema: SchemaFor[R]): Disjunction[Throwable, R] = {
+    new AvroBinaryInputStream[R](new SeekableByteArrayInput(bytes), Option(writerSchema), Option(readerSchema())).tryIterator().next().toDisjunction
   }
 
-  def parseAvroJson[R <: Product: FromRecord, W <: Product](implicit readerSchemaFor: SchemaFor[R], writerSchemaFor: SchemaFor[W]): Option[R] = {
-    AvroJsonInputStream[R](new SeekableByteArrayInput(bytes), Option(writerSchemaFor())).iterator().toList.headOption
+  def parseAvroJson[R <: Product: FromRecord, W <: Product](implicit readerSchemaFor: SchemaFor[R], writerSchemaFor: SchemaFor[W]): Disjunction[Throwable, R] = {
+    AvroJsonInputStream[R](new SeekableByteArrayInput(bytes), Option(writerSchemaFor())).tryIterator().next().toDisjunction
   }
 
-  def parseAvroJson[R <: Product: FromRecord](writerSchema: Schema)(implicit readerSchema: SchemaFor[R]): Option[R] = {
-    AvroJsonInputStream[R](new SeekableByteArrayInput(bytes), Option(writerSchema), Option(readerSchema())).iterator().toList.headOption
+  def parseAvroJson[R <: Product: FromRecord](writerSchema: Schema)(implicit readerSchema: SchemaFor[R]): Disjunction[Throwable, R] = {
+    AvroJsonInputStream[R](new SeekableByteArrayInput(bytes), Option(writerSchema), Option(readerSchema())).tryIterator().next().toDisjunction
   }
 }
