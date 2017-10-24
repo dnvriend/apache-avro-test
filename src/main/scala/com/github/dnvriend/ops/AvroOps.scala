@@ -27,8 +27,8 @@ import scalaz.Scalaz._
 object AvroOps extends AvroOps
 
 trait AvroOps {
-  implicit def toAvroSerializeOpsImpl[A <: Product: SchemaFor: ToRecord](a: A) = new AvroSerializeOpsImpl(a)
-  implicit def toAvroDeserializeOpsImpl[A <: Product](bytes: Array[Byte]) = new AvroDeSerializeOpsImpl(bytes)
+  implicit def toAvroSerializeOpsImpl[A <: Product: SchemaFor: ToRecord](a: A): AvroSerializeOpsImpl[A] = new AvroSerializeOpsImpl(a)
+  implicit def toAvroDeserializeOpsImpl[A <: Product](bytes: Array[Byte]): AvroDeSerializeOpsImpl = new AvroDeSerializeOpsImpl(bytes)
 
   def fingerPrintFor[A <: Product](implicit schemaFor: SchemaFor[A]): Array[Byte] = {
     SchemaNormalization.parsingFingerprint("SHA-256", schemaFor())

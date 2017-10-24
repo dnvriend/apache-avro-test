@@ -394,8 +394,7 @@ class SchemaEvolutionTest extends TestSpec {
       schemaFor[v6.Person],
       schemaFor[v7.Person],
       schemaFor[v8.Person],
-      schemaFor[v9.Person],
-    ) shouldBe right[Schema]
+      schemaFor[v9.Person]) shouldBe right[Schema]
 
     // not compatible
     checkFullCompatibility[v10.Person](
@@ -406,7 +405,6 @@ class SchemaEvolutionTest extends TestSpec {
       schemaFor[v6.Person],
       schemaFor[v7.Person],
       schemaFor[v8.Person],
-      schemaFor[v9.Person],
-    ) shouldBe left[Throwable]
+      schemaFor[v9.Person]) shouldBe left[Throwable]
   }
 }

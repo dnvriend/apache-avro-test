@@ -17,7 +17,7 @@ package com.github.dnvriend.ops
 import java.io.InputStream
 
 trait InputStreamOps {
-  implicit def toInputStreamOpsImpl(that: InputStream) = new InputStreamOpsImpl(that)
+  implicit def toInputStreamOpsImpl(that: InputStream): InputStreamOpsImpl = new InputStreamOpsImpl(that)
 }
 
 class InputStreamOpsImpl(that: InputStream) {
