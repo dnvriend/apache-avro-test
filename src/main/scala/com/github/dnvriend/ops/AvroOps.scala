@@ -29,6 +29,8 @@ object AvroOps extends AvroOps
 trait AvroOps {
   implicit def toAvroSerializeOpsImpl[A <: Product: SchemaFor: ToRecord](a: A): AvroSerializeOpsImpl[A] = new AvroSerializeOpsImpl(a)
   implicit def toAvroDeserializeOpsImpl[A <: Product](bytes: Array[Byte]): AvroDeSerializeOpsImpl = new AvroDeSerializeOpsImpl(bytes)
+  implicit def toAvroSchemaOps(that: Schema): AvroSchemaOpsImpl = new AvroSchemaOpsImpl(that)
+  implicit def toAvroStringOps(that: String): AvroStringOpsImpl = new AvroStringOpsImpl(that)
 
   def fingerPrintFor[A <: Product](implicit schemaFor: SchemaFor[A]): Array[Byte] = {
     SchemaNormalization.parsingFingerprint("SHA-256", schemaFor())
@@ -95,5 +97,20 @@ class AvroDeSerializeOpsImpl(bytes: Array[Byte]) {
 
   def parseAvroJson[R <: Product: FromRecord](writerSchema: Schema)(implicit readerSchema: SchemaFor[R]): Disjunction[Throwable, R] = {
     AvroJsonInputStream[R](new SeekableByteArrayInput(bytes), Option(writerSchema), Option(readerSchema())).tryIterator().next().toDisjunction
+  }
+}
+
+class AvroStringOpsImpl(that: String) {
+  def avroSchema: Schema = {
+    new Schema.Parser().parse(that)
+  }
+}
+
+class AvroSchemaOpsImpl(that: Schema) {
+  def fingerprint: Array[Byte] = {
+    SchemaNormalization.parsingFingerprint("SHA-256", that)
+  }
+  def toUtf8Array: Array[Byte] = {
+    that.toString.getBytes("UTF-8")
   }
 }
