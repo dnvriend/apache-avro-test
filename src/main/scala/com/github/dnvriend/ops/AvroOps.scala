@@ -84,19 +84,19 @@ class AvroSerializeOpsImpl[A <: Product: SchemaFor: ToRecord](data: A) {
 
 class AvroDeSerializeOpsImpl(bytes: Array[Byte]) {
   def parseAvroBinary[R <: Product: SchemaFor: FromRecord, W <: Product](implicit writerSchemaFor: SchemaFor[W]): Disjunction[Throwable, R] = {
-    AvroInputStream.binary[R](bytes, writerSchemaFor()).tryIterator().next().toDisjunction
+    parseAvroBinary[R](writerSchemaFor())
   }
 
-  def parseAvroBinary[R <: Product: FromRecord](writerSchema: Schema)(implicit readerSchema: SchemaFor[R]): Disjunction[Throwable, R] = {
-    new AvroBinaryInputStream[R](new SeekableByteArrayInput(bytes), Option(writerSchema), Option(readerSchema())).tryIterator().next().toDisjunction
+  def parseAvroBinary[R <: Product: FromRecord](writerSchema: Schema)(implicit readerSchemaFor: SchemaFor[R]): Disjunction[Throwable, R] = {
+    new AvroBinaryInputStream[R](new SeekableByteArrayInput(bytes), Option(writerSchema), Option(readerSchemaFor())).tryIterator().next().toDisjunction
   }
 
-  def parseAvroJson[R <: Product: FromRecord, W <: Product](implicit readerSchemaFor: SchemaFor[R], writerSchemaFor: SchemaFor[W]): Disjunction[Throwable, R] = {
-    AvroJsonInputStream[R](new SeekableByteArrayInput(bytes), Option(writerSchemaFor())).tryIterator().next().toDisjunction
+  def parseAvroJson[R <: Product: SchemaFor: FromRecord, W <: Product](implicit writerSchemaFor: SchemaFor[W]): Disjunction[Throwable, R] = {
+    parseAvroJson[R](writerSchemaFor())
   }
 
-  def parseAvroJson[R <: Product: FromRecord](writerSchema: Schema)(implicit readerSchema: SchemaFor[R]): Disjunction[Throwable, R] = {
-    AvroJsonInputStream[R](new SeekableByteArrayInput(bytes), Option(writerSchema), Option(readerSchema())).tryIterator().next().toDisjunction
+  def parseAvroJson[R <: Product: FromRecord](writerSchema: Schema)(implicit readerSchemaFor: SchemaFor[R]): Disjunction[Throwable, R] = {
+    AvroJsonInputStream[R](new SeekableByteArrayInput(bytes), Option(writerSchema), Option(readerSchemaFor())).tryIterator().next().toDisjunction
   }
 }
 

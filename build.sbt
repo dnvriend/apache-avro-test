@@ -38,7 +38,7 @@ licenses := Seq(("Apache-2.0", new URL("https://www.apache.org/licenses/LICENSE-
 headerMappings := headerMappings.value + (HeaderFileType.scala -> HeaderCommentStyle.CppStyleLineComment)
 
 // enable code rewrite and linting //
-scalacOptions ++= scalafixScalacOptions.value // add this line
+scalacOptions ++= scalafixScalacOptions.value
 scalafixVerbose := false
 
 val lintAndRewrite = taskKey[Unit]("Lints and rewrites Scala code using defined rules")
