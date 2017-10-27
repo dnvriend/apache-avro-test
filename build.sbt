@@ -8,10 +8,17 @@ scalaVersion := "2.12.3"
 
 scalacOptions += "-Ypartial-unification"
 scalacOptions += "-Ydelambdafy:inline"
+scalacOptions += "-unchecked"
+scalacOptions += "-deprecation"
+scalacOptions += "-language:higherKinds"
+scalacOptions += "-language:implicitConversions"
+scalacOptions += "-feature"
+scalacOptions += "-Xfatal-warnings"
 
 libraryDependencies += "org.scalaz" %% "scalaz-core" % "7.2.16"
 libraryDependencies += "com.github.mpilquist" %% "simulacrum" % "0.11.0"
 libraryDependencies += "com.sksamuel.avro4s" %% "avro4s-core" % "1.8.0"
+libraryDependencies += "com.typesafe.play" %% "play-json" % "2.6.6"
 libraryDependencies += "com.softwaremill.macwire" %% "macros" % "2.3.0" % Provided
 libraryDependencies += "org.typelevel" %% "scalaz-scalatest" % "1.1.2" % Test
 libraryDependencies += "org.scalatest" %% "scalatest" % "3.0.3" % Test
@@ -45,7 +52,7 @@ val lintAndRewrite = taskKey[Unit]("Lints and rewrites Scala code using defined 
 
 lintAndRewrite := {
   // see: https://scalacenter.github.io/scalafix/docs/users/rules
-  (List(
+  List(
     "RemoveUnusedImports", // https://scalacenter.github.io/scalafix/docs/rules/RemoveUnusedImports
     "ExplicitResultTypes", // https://scalacenter.github.io/scalafix/docs/rules/ExplicitResultTypes
     "ProcedureSyntax", // https://scalacenter.github.io/scalafix/docs/rules/ProcedureSyntax
@@ -57,7 +64,7 @@ lintAndRewrite := {
     "NoInfer", // https://scalacenter.github.io/scalafix/docs/rules/NoInfer
   ).map(rule => s" $rule")
     .map(rule => scalafix.toTask(rule))
-    .reduce(_ dependsOn _) triggeredBy (compile in Compile)).value
+    .reduce(_ dependsOn _).value
 }
 
 enablePlugins(AutomateHeaderPlugin, SbtScalariform)

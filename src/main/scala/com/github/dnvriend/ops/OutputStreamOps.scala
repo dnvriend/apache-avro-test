@@ -14,14 +14,17 @@
 
 package com.github.dnvriend.ops
 
-object AllOps extends AllOps
+import java.io.OutputStream
 
-trait AllOps extends AvroOps
-  with ByteArrayOps
-  with ByteBufferOps
-  with FunctionalOps
-  with InputStreamOps
-  with JsonOps
-  with OutputStreamOps
-  with StringOps
+import play.api.libs.json.{ Json, Writes }
 
+trait OutputStreamOps {
+  def toOutputStreamOps[A <: Product: Writes](that: A) = new OutputStreamOpsImpl(that)
+}
+
+class OutputStreamOpsImpl[A <: Product: Writes](that: A) extends StringOps {
+  def write(os: OutputStream): Unit = {
+    os.write(Json.toJson(that).toString().toUtf8Array)
+    os.close()
+  }
+}

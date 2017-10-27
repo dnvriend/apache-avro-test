@@ -14,15 +14,13 @@
 
 package com.github.dnvriend
 
-import java.io.{ ByteArrayOutputStream, OutputStream }
-
 import com.github.dnvriend.ops.AllOps
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.{ FlatSpec, Matchers, OptionValues, TryValues }
 import org.typelevel.scalatest.{ DisjunctionMatchers, DisjunctionValues, ValidationMatchers, ValidationValues }
 
-import scala.concurrent.{ ExecutionContext, Future }
 import scala.concurrent.duration._
+import scala.concurrent.{ ExecutionContext, Future }
 import scala.util.Try
 
 abstract class TestSpec extends FlatSpec
@@ -41,11 +39,5 @@ abstract class TestSpec extends FlatSpec
 
   implicit class PimpedFuture[T](self: Future[T]) {
     def toTry: Try[T] = Try(self.futureValue)
-  }
-
-  def withOutputStream(f: OutputStream => Unit): Array[Byte] = {
-    val baos = new ByteArrayOutputStream()
-    try f(baos) finally baos.close()
-    baos.toByteArray
   }
 }
