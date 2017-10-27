@@ -17,7 +17,7 @@ package com.github.dnvriend.evolution
 import com.github.dnvriend.TestSpec
 import com.sksamuel.avro4s.{ AvroNamespace, SchemaFor }
 import org.apache.avro.Schema
-
+import com.github.dnvriend.ops.AvroOps._
 import scalaz.Scalaz._
 
 object v1 {
@@ -40,7 +40,7 @@ object v1 {
       |  } ]
       |}
     """.stripMargin
-  val schema: Schema = new Schema.Parser().parse(avroSchema)
+  val schema: Schema = avroSchema.parseAvroSchemaFromString
 }
 
 object v2 {
@@ -63,7 +63,7 @@ object v2 {
       |  } ]
       |}
     """.stripMargin
-  val schema: Schema = new Schema.Parser().parse(avroSchema)
+  val schema: Schema = avroSchema.parseAvroSchemaFromString
 }
 
 object v3 {
@@ -86,7 +86,7 @@ object v3 {
       |  } ]
       |}
     """.stripMargin
-  val schema: Schema = new Schema.Parser().parse(avroSchema)
+  val schema: Schema = avroSchema.parseAvroSchemaFromString
 }
 
 object v4 {
@@ -133,7 +133,7 @@ object v4 {
     """.stripMargin
 
   // create a schema with Avro4s
-  val schema: Schema = SchemaFor[Person]()
+  val schema: Schema = avroSchema.parseAvroSchemaFromString
 }
 
 object v5 {
@@ -173,7 +173,7 @@ object v6 {
       |  } ]
       |}
     """.stripMargin
-  val schema: Schema = SchemaFor[Person]()
+  val schema: Schema = avroSchema.parseAvroSchemaFromString
 }
 
 object v7 {
@@ -208,7 +208,7 @@ object v7 {
       |  } ]
       |}
     """.stripMargin
-  val schema: Schema = SchemaFor[Person]()
+  val schema: Schema = avroSchema.parseAvroSchemaFromString
 }
 
 object v8 {
@@ -246,7 +246,7 @@ object v8 {
       |  } ]
       |}
     """.stripMargin
-  val schema: Schema = SchemaFor[Person]()
+  val schema: Schema = avroSchema.parseAvroSchemaFromString
 }
 
 object v9 {
@@ -269,14 +269,15 @@ object v9 {
       |}
     """.stripMargin
 
-  val schema: Schema = SchemaFor[Person]()
+  val schema: Schema = avroSchema.parseAvroSchemaFromString
 }
 
 object v10 {
   // not compatible
   @AvroNamespace("com.github.dnvriend")
   case class Person(name: String, age: Int)
-  val schema: Schema = SchemaFor[Person]()
+  val avroSchema: String = """{"type":"record","name":"Person","namespace":"com.github.dnvriend","fields":[{"name":"name","type":"string"},{"name":"age","type":"int"}]}"""
+  val schema: Schema = avroSchema.parseAvroSchemaFromString
 }
 
 class SchemaEvolutionTest extends TestSpec {
