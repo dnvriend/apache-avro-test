@@ -13,7 +13,7 @@ scalacOptions += "-deprecation"
 scalacOptions += "-language:higherKinds"
 scalacOptions += "-language:implicitConversions"
 scalacOptions += "-feature"
-scalacOptions += "-Xfatal-warnings"
+//scalacOptions += "-Xfatal-warnings"
 
 libraryDependencies += "org.scalaz" %% "scalaz-core" % "7.2.16"
 libraryDependencies += "com.github.mpilquist" %% "simulacrum" % "0.11.0"
