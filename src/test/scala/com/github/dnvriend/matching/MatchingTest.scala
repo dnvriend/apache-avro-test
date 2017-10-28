@@ -26,6 +26,7 @@ object MatchingTest {
   case class Person(name: String)
 }
 
+// see: https://www.cakesolutions.net/teamblogs/ways-to-pattern-match-generic-types-in-scala
 class MatchingTest extends TestSpec {
 
   def determineWithOutTypeTag[A](xs: List[A]): String = xs match {
