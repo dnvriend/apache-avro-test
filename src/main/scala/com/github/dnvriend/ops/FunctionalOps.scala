@@ -50,4 +50,7 @@ class FunctionalOpsImpl[A](that: => A) {
     println(msg)
     that
   }
+  def liftList: List[A] = {
+    List(that)
+  }
 }

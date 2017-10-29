@@ -40,7 +40,7 @@ object v1 {
       |  } ]
       |}
     """.stripMargin
-  val schema: Schema = avroSchema.parseAvroSchemaFromString
+  val schema: Schema = avroSchema.s
 }
 
 object v2 {
@@ -63,7 +63,7 @@ object v2 {
       |  } ]
       |}
     """.stripMargin
-  val schema: Schema = avroSchema.parseAvroSchemaFromString
+  val schema: Schema = avroSchema.s
 }
 
 object v3 {
@@ -86,7 +86,7 @@ object v3 {
       |  } ]
       |}
     """.stripMargin
-  val schema: Schema = avroSchema.parseAvroSchemaFromString
+  val schema: Schema = avroSchema.s
 }
 
 object v4 {
@@ -133,7 +133,7 @@ object v4 {
     """.stripMargin
 
   // create a schema with Avro4s
-  val schema: Schema = avroSchema.parseAvroSchemaFromString
+  val schema: Schema = avroSchema.s
 }
 
 object v5 {
@@ -173,7 +173,7 @@ object v6 {
       |  } ]
       |}
     """.stripMargin
-  val schema: Schema = avroSchema.parseAvroSchemaFromString
+  val schema: Schema = avroSchema.s
 }
 
 object v7 {
@@ -208,7 +208,7 @@ object v7 {
       |  } ]
       |}
     """.stripMargin
-  val schema: Schema = avroSchema.parseAvroSchemaFromString
+  val schema: Schema = avroSchema.s
 }
 
 object v8 {
@@ -246,7 +246,7 @@ object v8 {
       |  } ]
       |}
     """.stripMargin
-  val schema: Schema = avroSchema.parseAvroSchemaFromString
+  val schema: Schema = avroSchema.s
 }
 
 object v9 {
@@ -269,7 +269,7 @@ object v9 {
       |}
     """.stripMargin
 
-  val schema: Schema = avroSchema.parseAvroSchemaFromString
+  val schema: Schema = avroSchema.s
 }
 
 object v10 {
@@ -277,7 +277,7 @@ object v10 {
   @AvroNamespace("com.github.dnvriend")
   case class Person(name: String, age: Int)
   val avroSchema: String = """{"type":"record","name":"Person","namespace":"com.github.dnvriend","fields":[{"name":"name","type":"string"},{"name":"age","type":"int"}]}"""
-  val schema: Schema = avroSchema.parseAvroSchemaFromString
+  val schema: Schema = avroSchema.s
 }
 
 class SchemaEvolutionTest extends TestSpec {

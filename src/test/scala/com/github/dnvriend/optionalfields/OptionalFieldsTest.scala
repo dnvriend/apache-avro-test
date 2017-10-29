@@ -25,42 +25,42 @@ object v1 {
   @AvroNamespace("com.github.dnvriend")
   case class PersonCreated(name: Option[String] = None)
   val avroSchema: String = """{"type":"record","name":"PersonCreated","namespace":"com.github.dnvriend","fields":[{"name":"name","type":["null","string"],"default":null}]}"""
-  val schema: Schema = avroSchema.parseAvroSchemaFromString
+  val schema: Schema = avroSchema.s
 }
 
 object v2 {
   @AvroNamespace("com.github.dnvriend")
   case class PersonCreated(name: Option[String] = None, age: Option[Int] = None)
   val avroSchema: String = """{"type":"record","name":"PersonCreated","namespace":"com.github.dnvriend","fields":[{"name":"name","type":["null","string"],"default":null},{"name":"age","type":["null","int"],"default":null}]}"""
-  val schema: Schema = avroSchema.parseAvroSchemaFromString
+  val schema: Schema = avroSchema.s
 }
 
 object v3 {
   @AvroNamespace("com.github.dnvriend")
   case class PersonCreated(name: Option[String] = None, age: Option[Int] = None, gender: Gender = Gender.MALE)
   val avroSchema: String = """{"type":"record","name":"PersonCreated","namespace":"com.github.dnvriend","fields":[{"name":"name","type":["null","string"],"default":null},{"name":"age","type":["null","int"],"default":null},{"name":"gender","type":{"type":"enum","name":"Gender","namespace":"com.github.dnvriend.optionalfields","symbols":["MALE","FEMALE"]},"default":"MALE"}]}"""
-  val schema: Schema = avroSchema.parseAvroSchemaFromString
+  val schema: Schema = avroSchema.s
 }
 
 object v4 {
   @AvroNamespace("com.github.dnvriend")
   case class PersonCreated(name: Option[String] = None, address: Option[String] = None)
   val avroSchema: String = """{"type":"record","name":"PersonCreated","namespace":"com.github.dnvriend","fields":[{"name":"name","type":["null","string"],"default":null},{"name":"address","type":["null","string"],"default":null}]}"""
-  val schema: Schema = avroSchema.parseAvroSchemaFromString
+  val schema: Schema = avroSchema.s
 }
 
 object v5 {
   @AvroNamespace("com.github.dnvriend")
   case class PersonCreated(address: Option[String] = None, zipcode: Option[String] = None)
   val avroSchema: String = """{"type":"record","name":"PersonCreated","namespace":"com.github.dnvriend","fields":[{"name":"address","type":["null","string"],"default":null},{"name":"zipcode","type":["null","string"],"default":null}]}"""
-  val schema: Schema = avroSchema.parseAvroSchemaFromString
+  val schema: Schema = avroSchema.s
 }
 
 object v6 {
   @AvroNamespace("com.github.dnvriend")
   case class PersonCreated(name: Option[String] = None)
   val avroSchema: String = """{"type":"record","name":"PersonCreated","namespace":"com.github.dnvriend","fields":[{"name":"name","type":["null","string"],"default":null}]}"""
-  val schema: Schema = avroSchema.parseAvroSchemaFromString
+  val schema: Schema = avroSchema.s
 }
 
 class OptionalFieldsTest extends TestSpec {
